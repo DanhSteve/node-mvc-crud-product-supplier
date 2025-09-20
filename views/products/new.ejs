@@ -1,0 +1,102 @@
+<%- include('../partials/header', { title: 'Add Product' }) %>
+
+<h2>Add New Product</h2>
+
+<% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+  <div class="alert alert-danger">
+    <ul>
+      <% errors.forEach(error => { %>
+        <li><%= error %></li>
+      <% }) %>
+    </ul>
+  </div>
+<% } %>
+
+<form action="/products" method="POST" id="productForm" novalidate>
+  <div class="mb-3">
+    <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
+    <input type="text" class="form-control" id="name" name="name" required
+      value="<%= product.name ? product.name : '' %>" />
+    <div class="invalid-feedback">
+      Please enter the product name.
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label for="price" class="form-label">Price <span class="text-danger">*</span></label>
+    <input type="number" class="form-control" id="price" name="price" min="0" step="0.01" required
+      value="<%= product.price ? product.price : '' %>" />
+    <div class="invalid-feedback">
+      Please enter a valid price (0 or more).
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label for="quantity" class="form-label">Quantity <span class="text-danger">*</span></label>
+    <input type="number" class="form-control" id="quantity" name="quantity" min="0" step="1" required
+      value="<%= product.quantity ? product.quantity : '' %>" />
+    <div class="invalid-feedback">
+      Please enter a valid quantity (0 or more).
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label for="supplier" class="form-label">Supplier <span class="text-danger">*</span></label>
+    <select class="form-select" id="supplier" name="supplier" required>
+      <option value="">-- Select Supplier --</option>
+      <% suppliers.forEach(s => { %>
+        <option value="<%= s._id %>" <%= product.supplier == s._id ? 'selected' : '' %>><%= s.name %></option>
+      <% }) %>
+    </select>
+    <div class="invalid-feedback">
+      Please select a supplier.
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-success">Add Product</button>
+  <a href="/products" class="btn btn-secondary ms-2">Cancel</a>
+</form>
+
+<script>
+  (function () {
+    'use strict'
+
+    const form = document.getElementById('productForm');
+
+    form.addEventListener('submit', function (event) {
+      form.classList.remove('was-validated');
+
+      if (!form.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+        form.classList.add('was-validated');
+        alert('Please fill in all required fields correctly.');
+        return;
+      }
+
+      // Additional checks for price and quantity >= 0
+      const price = parseFloat(form.price.value);
+      const quantity = parseInt(form.quantity.value);
+
+      if (isNaN(price) || price < 0) {
+        event.preventDefault();
+        event.stopPropagation();
+        form.classList.add('was-validated');
+        alert('Price must be a number 0 or greater.');
+        form.price.focus();
+        return;
+      }
+
+      if (isNaN(quantity) || quantity < 0) {
+        event.preventDefault();
+        event.stopPropagation();
+        form.classList.add('was-validated');
+        alert('Quantity must be a number 0 or greater.');
+        form.quantity.focus();
+        return;
+      }
+    }, false);
+  })();
+</script>
+
+<%- include('../partials/footer') %>

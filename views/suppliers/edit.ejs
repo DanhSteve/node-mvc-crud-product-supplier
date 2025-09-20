@@ -1,0 +1,78 @@
+<%- include('../partials/header', { title: 'Edit Supplier' }) %>
+
+<h2>Edit Supplier</h2>
+
+<% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+  <div class="alert alert-danger">
+    <ul>
+      <% errors.forEach(error => { %>
+        <li><%= error %></li>
+      <% }) %>
+    </ul>
+  </div>
+<% } %>
+
+<form action="/suppliers/<%= supplier._id %>?_method=PUT" method="POST" id="supplierForm" novalidate>
+  <div class="mb-3">
+    <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
+    <input type="text" class="form-control" id="name" name="name" required
+      value="<%= supplier.name ? supplier.name : '' %>" />
+    <div class="invalid-feedback">
+      Please enter the supplier name.
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label for="address" class="form-label">Address <span class="text-danger">*</span></label>
+    <input type="text" class="form-control" id="address" name="address" required
+      value="<%= supplier.address ? supplier.address : '' %>" />
+    <div class="invalid-feedback">
+      Please enter the address.
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label for="phone" class="form-label">Phone <span class="text-danger">*</span></label>
+    <input type="text" class="form-control" id="phone" name="phone" required pattern="^\d{9,15}$"
+      value="<%= supplier.phone ? supplier.phone : '' %>" />
+    <div class="invalid-feedback">
+      Please enter a valid phone number (9-15 digits).
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-warning">Update Supplier</button>
+  <a href="/suppliers" class="btn btn-secondary ms-2">Cancel</a>
+</form>
+
+<script>
+  (function () {
+    'use strict'
+
+    const form = document.getElementById('supplierForm');
+
+    form.addEventListener('submit', function (event) {
+      form.classList.remove('was-validated');
+
+      if (!form.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+        form.classList.add('was-validated');
+        alert('Please fill in all required fields correctly.');
+        return;
+      }
+
+      const phoneInput = form.phone;
+      const phonePattern = /^\d{9,15}$/;
+      if (!phonePattern.test(phoneInput.value.trim())) {
+        event.preventDefault();
+        event.stopPropagation();
+        form.classList.add('was-validated');
+        alert('Phone number must be 9 to 15 digits.');
+        phoneInput.focus();
+        return;
+      }
+    }, false);
+  })();
+</script>
+
+<%- include('../partials/footer') %>
