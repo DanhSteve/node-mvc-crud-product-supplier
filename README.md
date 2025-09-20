@@ -9,7 +9,7 @@ Product management: name, price, quantity, supplierId (linked to supplier)
 | Field      | Data Type | Description               |
 |-------------|--------------|----------------------|
 | _id         | ObjectId     | Primary key          |
-| name        | String       | TProduct name         |
+| name        | String       | Product name         |
 | price       | Number       | Price                  |
 | quantity    | Number       | Quantity             |
 | supplierId  | ObjectId     | FK to suppliers     |
